@@ -5,8 +5,6 @@ const useFetch = (configurationParam, inicialValue) => {
     const [ answerFetch, setAnswerFetch ] = useState(inicialValue);
     const [ status, setStatus ] = useState("inactive");
 
-    console.log(answerFetch);
-
     const fullAdress = (url, searchParams) => {
         let queryParams = "";
     
@@ -16,24 +14,26 @@ const useFetch = (configurationParam, inicialValue) => {
             if(index < searchParams.length - 1) queryParams += '&';            
         });
     
-        console.log(url + queryParams);
         return url + queryParams;
     }
 
     const getAnswerFetch = async (currentUrl, currentParameters) => {
         setStatus("Fetching");
         try{
-            let response = await fetch( fullAdress(currentUrl, currentParameters) );
+            const adress = fullAdress(currentUrl, currentParameters);
+            if (configuration.logResponses) console.log( "Adress fetching: ", adress );
+            let response = await fetch( adress );
             if(!response.ok) throw Error(response.statusText);
 
             let result = await response.json();
-            console.log( JSON.stringify(result) );
+            if (configuration.logResponses) console.log( "Raw Fetch: ", result );
             setStatus("Data Fetch");
             setAnswerFetch( JSON.stringify(result) );
         }
         catch (err){
             setStatus("Data not Fetch");
-            setAnswerFetch(`Error fetching: ${err.message}`);
+            if (configuration.logResponses) console.log( "Fetch error: ", err.message );
+            setAnswerFetch("");
         }      
       }
     

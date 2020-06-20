@@ -16,9 +16,8 @@ function App() {
   const [ answerHook, status,  setConfiguration ] = useFetch(myConfiguration, "test");
 
   const changeConfiguration = () => {
-    myConfiguration.parameters = [ ];
-    //myConfiguration.url = "https://api.nationalize.io";
-    console.log("teste");
+    myConfiguration.parameters = [ {name: "Pedro"} ];
+    myConfiguration.logResponses = false;
     setConfiguration(myConfiguration);
   }
 
