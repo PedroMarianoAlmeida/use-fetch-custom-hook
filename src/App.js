@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 function App() {
@@ -28,12 +27,15 @@ function App() {
     setAnswerFetch( JSON.stringify(result) );
   }
 
-  getAnswerFetch(url, parameters);
+  useEffect(() => {
+    getAnswerFetch(url, parameters);
+  }, [ parameters ]);
 
   return (
     <div className="App">
       <header className="App-header">
         <h1> { answerFetch } </h1>
+        <button onClick={()=> setParameters( [ { "name": "Jonh" } ] )}>Change parameter</button>
       </header>
     </div>
   );
