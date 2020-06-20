@@ -21,28 +21,30 @@ const useFetch = (configurationParam) => {
     useEffect(() => {
         const getAnswerFetch = async (currentUrl, currentParameters) => {
             setStatus("Fetching");
+            setAnswerFetch(configuration.doWhenFetching);
+            let result;
             try{
                 const adress = fullAdress(currentUrl, currentParameters);
                 if (configuration.logResponses) console.log( "Adress fetching: ", adress );
                 let response = await fetch( adress );
                 if(!response.ok) throw Error(response.statusText);
     
-                let result = await response.json();
+                result = await response.json();
                 if (configuration.logResponses) console.log( "Raw Fetch: ", result );
-                setStatus("Data Fetch");
-                setAnswerFetch( result );
+                setStatus("Success");
+                setAnswerFetch( configuration.doWhenSuccess( result ) );
             }
             catch (err){
-                setStatus("Data not Fetch");
+                setStatus("Fail");
                 if (configuration.logResponses) console.log( "Fetch error: ", err.message );
-                setAnswerFetch(err);
+                setAnswerFetch( configuration.doWhenFail( err, result ) );
             }      
           }
 
         if ( configuration.shouldRun ) getAnswerFetch(configuration.url, configuration.parameters);
         else {
             setStatus("Inactive");
-            setAnswerFetch(null);
+            setAnswerFetch( configuration.doWhenInactive() );
         }
         
     }, [ configuration ]);
