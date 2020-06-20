@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import './App.css';
 import useFetch from './useFetch';
 
@@ -8,8 +8,6 @@ function App() {
     url: "https://api.nationalize.io?",
     shouldRun: true,
     parameters : [ { "name": "Jonh" },{ "name[]": "Michael" }, {key: "123"} ],
-    propertiesWhenOK: ['name'],
-    propertiesWhenError: ['message'],
     logResponses: true,
   }
 
