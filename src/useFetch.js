@@ -1,17 +1,18 @@
 import {useState, useEffect} from 'react';
 
-const useFetch = (configurationParam, inicialValue) => {
+const useFetch = (configurationParam) => {
     const [configuration, setConfiguration] = useState(configurationParam);
-    const [ answerFetch, setAnswerFetch ] = useState(inicialValue);
+    const [ answerFetch, setAnswerFetch ] = useState(null);
     const [ status, setStatus ] = useState("inactive");
 
     const fullAdress = (url, searchParams) => {
         let queryParams = "";
     
-        searchParams.foreach( (param, index) => {
+        searchParams.map( (param, index) => {
             const key = Object.keys(param)[0];
             queryParams += `${key}=${param[key]}`;
-            if(index < searchParams.length - 1) queryParams += '&';                        
+            if(index < searchParams.length - 1) queryParams += '&';
+            return "";                        
         });
     
         return url + queryParams;
@@ -29,16 +30,20 @@ const useFetch = (configurationParam, inicialValue) => {
                 let result = await response.json();
                 if (configuration.logResponses) console.log( "Raw Fetch: ", result );
                 setStatus("Data Fetch");
-                setAnswerFetch( JSON.stringify(result) );
+                setAnswerFetch( result );
             }
             catch (err){
                 setStatus("Data not Fetch");
                 if (configuration.logResponses) console.log( "Fetch error: ", err.message );
-                setAnswerFetch("");
+                setAnswerFetch(err);
             }      
           }
 
-        getAnswerFetch(configuration.url, configuration.parameters);
+        if ( configuration.shouldRun ) getAnswerFetch(configuration.url, configuration.parameters);
+        else {
+            setStatus("Inactive");
+            setAnswerFetch(null);
+        }
         
     }, [ configuration ]);
 

@@ -5,17 +5,19 @@ import useFetch from './useFetch';
 function App() {
 
   const myConfiguration = {
-    url: "https://api.nationalize.io?",
     shouldRun: true,
-    parameters : [ { "name": "Jonh" },{ "name[]": "Michael" }, {key: "123"} ],
     logResponses: true,
+
+    url: "https://api.nationalize.io?",    
+    parameters : [ { "name": "Jonh" },{ "name[]": "Michael" }, {key: "123"} ],
+    
   }
 
-  const [ answerHook, status,  setConfiguration ] = useFetch(myConfiguration, "test");
+  const [ answerHook, status,  setConfiguration ] = useFetch(myConfiguration);
 
   const changeConfiguration = () => {
     myConfiguration.parameters = [ {name: "Pedro"} ];
-    myConfiguration.logResponses = false;
+    myConfiguration.shouldRun = false;
     setConfiguration(myConfiguration);
   }
 
@@ -23,7 +25,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h2> {status} </h2>
-        <h1> { answerHook } </h1>
+        <h1>  </h1>
         <button onClick={changeConfiguration}>Change parameter</button>
       </header>
     </div>
