@@ -3,8 +3,18 @@ import './App.css';
 
 function App() {
 
-  const [ url, setUrl ] = useState("https://api.nationalize.io?");
-  const [ parameters, setParameters ] = useState([ { "name": "Jonh" },{ "name[]": "Michael" }, {key: "123"} ])
+  const myConfiguration = {
+    url: "https://api.nationalize.io?",
+    shouldRun: true,
+    parameters : [ { "name": "Jonh" },{ "name[]": "Michael" }, {key: "123"} ],
+    propertiesWhenOK: ['name'],
+    propertiesWhenError: ['message'],
+    logResponses: true,
+  }
+
+  const [configuration, setConfiguration] = useState(myConfiguration);
+  //const [ url, setUrl ] = useState("https://api.nationalize.io?");
+  //const [ parameters, setParameters ] = useState([ { "name": "Jonh" },{ "name[]": "Michael" }, {key: "123"} ])
   const [ answerFetch, setAnswerFetch ] = useState("inicialValue");
 
   const fullAdress = (url, searchParams) => {
@@ -28,14 +38,20 @@ function App() {
   }
 
   useEffect(() => {
-    getAnswerFetch(url, parameters);
-  }, [ parameters ]);
+    getAnswerFetch(configuration.url, configuration.parameters);
+  }, [ configuration ]);
+
+  const changeConfiguration = () => {
+    myConfiguration.parameters = [ { "name": "Pedro" } ];
+    console.log("Change configuration")
+    setConfiguration(myConfiguration);
+  }
 
   return (
     <div className="App">
       <header className="App-header">
         <h1> { answerFetch } </h1>
-        <button onClick={()=> setParameters( [ { "name": "Jonh" } ] )}>Change parameter</button>
+        <button onClick={changeConfiguration}>Change parameter</button>
       </header>
     </div>
   );
