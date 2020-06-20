@@ -3,6 +3,7 @@ import {useState, useEffect} from 'react';
 const useFetch = (configurationParam, inicialValue) => {
     const [configuration, setConfiguration] = useState(configurationParam);
     const [ answerFetch, setAnswerFetch ] = useState(inicialValue);
+    const [ status, setStatus ] = useState("inactive");
 
     console.log(answerFetch);
 
@@ -20,17 +21,27 @@ const useFetch = (configurationParam, inicialValue) => {
     }
 
     const getAnswerFetch = async (currentUrl, currentParameters) => {
-        let response = await fetch( fullAdress(currentUrl, currentParameters) );
-        let result = await response.json();
-        console.log( JSON.stringify(result) );
-        setAnswerFetch( JSON.stringify(result) );
+        setStatus("Fetching");
+        try{
+            let response = await fetch( fullAdress(currentUrl, currentParameters) );
+            if(!response.ok) throw Error(response.statusText);
+
+            let result = await response.json();
+            console.log( JSON.stringify(result) );
+            setStatus("Data Fetch");
+            setAnswerFetch( JSON.stringify(result) );
+        }
+        catch (err){
+            setStatus("Data not Fetch");
+            setAnswerFetch(`Error fetching: ${err.message}`);
+        }      
       }
     
     useEffect(() => {
         getAnswerFetch(configuration.url, configuration.parameters);
     }, [ configuration ]);
 
-    return [ answerFetch, setConfiguration ];
+    return [ answerFetch, status, setConfiguration ];
 }
 
 export default useFetch;

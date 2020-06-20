@@ -13,10 +13,11 @@ function App() {
     logResponses: true,
   }
 
-  const [ answerHook, setConfiguration ] = useFetch(myConfiguration, "test");
+  const [ answerHook, status,  setConfiguration ] = useFetch(myConfiguration, "test");
 
   const changeConfiguration = () => {
-    myConfiguration.parameters = [ { "name": "Pedro" } ];
+    myConfiguration.parameters = [ ];
+    //myConfiguration.url = "https://api.nationalize.io";
     console.log("teste");
     setConfiguration(myConfiguration);
   }
@@ -24,6 +25,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+        <h2> {status} </h2>
         <h1> { answerHook } </h1>
         <button onClick={changeConfiguration}>Change parameter</button>
       </header>
