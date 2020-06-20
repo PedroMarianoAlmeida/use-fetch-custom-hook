@@ -18,12 +18,14 @@ const useFetch = (configurationParam) => {
     }   
     
     useEffect(() => {
-        const getAnswerFetch = async (currentUrl, currentParameters) => {
+
+
+        const getAnswerFetch = async () => {
             if (configuration.logResponses) console.log("Status: Fetching");
             setAnswerFetch(configuration.doWhenFetching);
             let result;
             try{
-                const adress = fullAdress(currentUrl, currentParameters);
+                const adress = fullAdress(configuration.url, configuration.parameters);
                 if (configuration.logResponses) console.log( "Adress fetching: ", adress );
                 let response = await fetch( adress );
                 if(!response.ok) throw Error(response.statusText);
@@ -45,7 +47,7 @@ const useFetch = (configurationParam) => {
             }      
           }
 
-        if ( configuration.shouldRun ) getAnswerFetch(configuration.url, configuration.parameters);
+        if ( configuration.shouldRun ) getAnswerFetch();
         else {
             if (configuration.logResponses) console.log("Status: Inactive");
             setAnswerFetch( configuration.doWhenInactive() );

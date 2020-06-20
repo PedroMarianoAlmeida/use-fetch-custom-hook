@@ -20,8 +20,8 @@ function App() {
   const [ answerHook, setConfiguration ] = useFetch(myConfiguration);
 
   const changeConfiguration = () => {
-    myConfiguration.parameters = [ {nae: "Pedro"} ];
-    myConfiguration.shouldRun = false;
+    myConfiguration.parameters = [ {name: "Pedro"} ];
+    //myConfiguration.shouldRun = false;
     setConfiguration(myConfiguration);
   }
 
