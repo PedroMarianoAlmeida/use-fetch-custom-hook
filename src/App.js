@@ -17,7 +17,7 @@ function App() {
     doWhenFail: (error, rawAnswer) => <h1> {error.message} </h1>
   }
 
-  const [ answerHook, status,  setConfiguration ] = useFetch(myConfiguration);
+  const [ answerHook, setConfiguration ] = useFetch(myConfiguration);
 
   const changeConfiguration = () => {
     myConfiguration.parameters = [ {nae: "Pedro"} ];
@@ -28,7 +28,6 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h2> {status} </h2>
         {answerHook}
         <button onClick={changeConfiguration}>Change parameter</button>
       </header>
