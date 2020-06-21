@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react';
 
 const useFetch = (configurationParam) => {
     const [configuration, setConfiguration] = useState(configurationParam);
-    const [ answerFetch, setAnswerFetch ] = useState(null);
+    const [ answer, setAnswer ] = useState(null);
 
     const fullAdress = (url, searchParams) => {
         let queryParams = "";
@@ -18,11 +18,58 @@ const useFetch = (configurationParam) => {
     }   
     
     useEffect(() => {
+        let shouldRun;
+        const checkingUserInput = () => {
+            const configurationCopy = {...configuration};
+            const keys = Object.keys(configurationCopy);
+            if( !keys.includes("shouldRun") ) {
+                shouldRun = true;
+            }
+            else{
+                shouldRun = configuration.shouldRun;
+            }          
+            
+            if( !keys.includes("url") ){
+                console.log("URL property is obligatory, this HOOK is inactive");
+                shouldRun = false;
+            }            
 
+            if( !keys.includes("logResponses") ) configurationCopy.logResponses = true;
+
+            if( !keys.includes("doWhenInactive") ) configurationCopy.doWhenInactive = "";
+            if( !keys.includes("doWhenFetching") ) configurationCopy.doWhenFetching = "";
+            if( !keys.includes("doWhenSuccess") ) {
+                configurationCopy.doWhenSuccess = "";
+                console.log("Your hook doesn't return a value after fetching, all the informations will be in console.log");
+                configurationCopy.logResponses = true;
+            }
+            if( !keys.includes("doWhenFail") ) configurationCopy.doWhenFail = "";
+
+            if( keys.includes("parameters") ) {
+                if ( !Array.isArray( configurationCopy.parameters ) ) {
+                    console.log("The parameters propriety should be an array (with each parameter in a {key: value} object). This HOOK is inactive");
+                    shouldRun = false;
+                }
+                else{
+                    for(let param of configurationCopy.parameters) {
+                        if (typeof param != "object") {
+                            console.log("The parameter in parameters Array properties should be a {key: value} object. This HOOK is inactive");
+                            shouldRun = false;
+                        }
+                        else if(Object.keys(param).length !== 1) {
+                            console.log("The parameter in parameters Array properties should be a {key: value} object (only one propriety in Object). This HOOK is inactive");
+                            shouldRun = false;
+                        }
+                    }
+                }
+            }
+
+            if( JSON.stringify(configuration) !== JSON.stringify(configurationCopy) ) setConfiguration(configurationCopy)
+        }
 
         const getAnswerFetch = async () => {
             if (configuration.logResponses) console.log("Status: Fetching");
-            setAnswerFetch(configuration.doWhenFetching);
+            setAnswer(configuration.doWhenFetching);
             let result;
             try{
                 const adress = fullAdress(configuration.url, configuration.parameters);
@@ -36,26 +83,27 @@ const useFetch = (configurationParam) => {
                     console.log( "Staus: Sucess");
                 } 
                 
-                setAnswerFetch( configuration.doWhenSuccess( result ) );
+                setAnswer( configuration.doWhenSuccess( result ) );
             }
             catch (err){
                 if (configuration.logResponses) {
                     console.log( "Fetch error: ", err.message );
                     console.log( "Staus: Fail" );
                 }
-                setAnswerFetch( configuration.doWhenFail( err, result ) );
+                setAnswer( configuration.doWhenFail( err, result ) );
             }      
           }
 
-        if ( configuration.shouldRun ) getAnswerFetch();
+        checkingUserInput();
+        if ( shouldRun ) getAnswerFetch(); //Using the variable shouldRun inside configuration param (and set the configuration with this new information in checkingUserInput) won't work
         else {
             if (configuration.logResponses) console.log("Status: Inactive");
-            setAnswerFetch( configuration.doWhenInactive() );
+            setAnswer( configuration.doWhenInactive() );
         }
         
     }, [ configuration ]);
 
-    return [ answerFetch, setConfiguration ];
+    return [ answer, setConfiguration ];
 }
 
 export default useFetch;

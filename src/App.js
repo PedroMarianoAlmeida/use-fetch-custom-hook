@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import './App.css';
 import useFetch from './useFetch';
 
@@ -21,7 +21,7 @@ function App() {
 
   const changeConfiguration = () => {
     myConfiguration.parameters = [ {name: "Pedro"} ];
-    //myConfiguration.shouldRun = false;
+    
     setConfiguration(myConfiguration);
   }
 
